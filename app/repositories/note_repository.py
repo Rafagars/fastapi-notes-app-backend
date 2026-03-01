@@ -1,4 +1,4 @@
-from sqlachemy.orm import Session
+from sqlalchemy.orm import Session
 from app.models.note import Note
 
 def save_note(db: Session, title: str, content: str):

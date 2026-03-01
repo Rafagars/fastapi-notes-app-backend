@@ -15,7 +15,8 @@ frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
 origins = [
     "http://localhost:5173",  # Default Vite's port (Vue)
     "http://127.0.0.1:5173",
-    frontend_url
+    frontend_url,
+    frontend_url.strip("/"),
 ]
 
 app.add_middleware(

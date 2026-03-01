@@ -1,0 +1,29 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api import notes
+from app.database import engine, Base
+
+# Creates automatically the tables when it iniciates
+Base.metadata.create_all(bind = engine)
+
+app = FastAPI(title="Notes API")
+
+origins = [
+    "http://localhost:5173",  # Default Vite's port (Vue)
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials = True,
+    allow_methods = ["*"], # Allows GET, POST, PUT, DELETE, etc.
+    allow_header= ["*"]
+)
+
+# Includes the router
+app.include_router(notes.router)
+
+@app.get("/")
+def health_check():
+    return {"status": "ok"}

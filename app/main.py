@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from app.api import notes
 from app.database import engine, Base
+from app.models.note import Note
 
 # Creates automatically the tables when it iniciates
 Base.metadata.create_all(bind = engine)

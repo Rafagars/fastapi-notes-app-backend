@@ -1,4 +1,5 @@
 fastapi
 uvicorn
-sqlalchemy
+SQLAlchemy~=2.0.36
 pydantic
+Flask-SQLAlchemy~=3.1.1

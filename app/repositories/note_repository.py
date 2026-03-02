@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from app.models.note import Note
 
-def save_note(db: Session, title: str, content: str):
-    db_note = Note(title = title, content = content, archived=False)
+def save_note(db: Session, title: str, content: str, tags_names: list[str]):
+    #db_note = Note(title = title, content = content, archived=False)
     db.add(db_note)
     db.commit()
     db.refresh(db_note)

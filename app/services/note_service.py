@@ -5,10 +5,23 @@ from app.models.note import Note
 def get_all_notes(db: Session):
     return db.query(Note).all()
 
-def create_new_note(db: Session, title: str, content: str):
+def create_new_note(db: Session, title: str, content: str, tag_names: list[str] = []):
     if not title.strip():
         raise ValueError("Tittle can't be empty")
-    return note_repository.save_note(db, title, content)
+
+    new_note = Note(title = title, content = content)
+
+    for name in tag_names:
+        name = name.strip().lower()
+        if name:
+            #We search if it already exists
+            tag = db.query(Tag).filter(Tag.name == name).first()
+            if not tag:
+                tag = Tag(name = name)
+                db.add(tag)
+            new_note.tags.append(tag)
+            
+    return note_repository.save_note(db, new_note.title, new_note.content, new_note.tags)
 
 def archive_unarchive(db: Session, note_id: int):
     note = note_repository.toggle_archive_note(db, note_id)

@@ -19,6 +19,7 @@ class TagRead(TagBase):
     id: int
     class Config:
         orm_mode = True
+        from_attributes = True
 
 class NoteRead(BaseModel):
     id: int
@@ -29,9 +30,12 @@ class NoteRead(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 @router.get("/notes")
-def get_notes(db: Session = Depends(get_db)):
+def get_notes(tag: str = None, db: Session = Depends(get_db)):
+    if tag:
+        return note_service.filter_notes_by_tag(db, tag)
     return note_service.get_all_notes(db)
 
 @router.post("/notes")

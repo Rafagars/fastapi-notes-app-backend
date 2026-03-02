@@ -3,20 +3,44 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services import note_service
 from pydantic import BaseModel
+from typing import List, Optional
 
 router = APIRouter()
 
 class NoteCreate(BaseModel):
     title: str
     content: str
+    tags: Optional[List[str]] = []
+
+class TagBase(BaseModel):
+    name: str
+
+class TagRead(TagBase):
+    id: int
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
+class NoteRead(BaseModel):
+    id: int
+    title: str
+    content: str
+    archived: bool
+    tags: List[TagRead] = []
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 @router.get("/notes")
-def get_notes(db: Session = Depends(get_db)):
+def get_notes(tag: str = None, db: Session = Depends(get_db)):
+    if tag:
+        return note_service.filter_notes_by_tag(db, tag)
     return note_service.get_all_notes(db)
 
 @router.post("/notes")
 def create_note(note: NoteCreate, db: Session = Depends(get_db)):
-    return note_service.create_new_note(db, note.title, note.content)
+    return note_service.create_new_note(db, note.title, note.content, note.tags)
 
 @router.patch("/notes/{note_id}/archive")
 def archive_note(note_id: int, db: Session = Depends(get_db)):

@@ -35,7 +35,7 @@ def toggle_archive_note(db: Session, note_id: int):
 def delete_note(db: Session, note_id: int):
     db_note = db.query(Note).filter(Note.id == note_id).first()
     if db_note:
-        db.delete_note(db_note)
+        db.delete(db_note)
         db.commit()
         return True
     return False

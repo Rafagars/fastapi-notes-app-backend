@@ -1,9 +1,9 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.repositories import note_repository
 from app.models.note import Note
 
 def get_all_notes(db: Session):
-    return db.query(Note).all()
+    return db.query(Note).options(joinedload(Note.tags)).all()
 
 def create_new_note(db: Session, title: str, content: str, tag_names: list[str] = []):
     if not title.strip():

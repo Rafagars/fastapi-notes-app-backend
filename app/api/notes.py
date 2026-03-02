@@ -32,13 +32,13 @@ class NoteRead(BaseModel):
         orm_mode = True
         from_attributes = True
 
-@router.get("/notes")
+@router.get("/notes", response_model=List[NoteRead])
 def get_notes(tag: str = None, db: Session = Depends(get_db)):
     if tag:
         return note_service.filter_notes_by_tag(db, tag)
     return note_service.get_all_notes(db)
 
-@router.post("/notes")
+@router.post("/notes", response_model=NoteRead)
 def create_note(note: NoteCreate, db: Session = Depends(get_db)):
     return note_service.create_new_note(db, note.title, note.content, note.tags)
 

@@ -1,5 +1,9 @@
 from sqlalchemy.orm import Session
 from app.repositories import note_repository
+from app.models.note import Note
+
+def get_all_notes(db: Session):
+    return db.query(Note).all()
 
 def create_new_note(db: Session, title: str, content: str):
     if not title.strip():

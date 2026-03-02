@@ -2,12 +2,21 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services import note_service
+from pydantic import BaseModel
 
 router = APIRouter()
 
+class NoteCreate(BaseModel):
+    title: str
+    content: str
+
+@router.get("/notes")
+def get_notes(db: Session = Depends(get_db)):
+    return note_service.get_all_notes(db)
+
 @router.post("/notes")
-def create_note(title: str, content: str, db: Session = Depends(get_db)):
-    return note_service.create_new_note(db, title, content)
+def create_note(note: NoteCreate, db: Session = Depends(get_db)):
+    return note_service.create_new_note(db, note.title, note.content)
 
 @router.patch("/notes/{note_id}/archive")
 def archive_note(note_id: int, db: Session = Depends(get_db)):
